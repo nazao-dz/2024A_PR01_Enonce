@@ -94,10 +94,25 @@ class Game:
 
     def handle_keypress(self, event):
         pass
+        if event.key == pygame.K_RIGHT:
+         if not self.check_collision((1, 0)):
+            self.pacman.set_direction((1, 0))
+
+        elif event.key == pygame.K_LEFT:
+           if not self.check_collision((-1, 0)):
+            self.pacman.set_direction((-1, 0))
+
+        elif event.key == pygame.K_UP:
+          if not self.check_collision((0, -1)):
+            self.pacman.set_direction((0, -1))
+
+        elif event.key == pygame.K_DOWN:
+         if not self.check_collision((0, 1)):
+            self.pacman.set_direction((0, 1))
+
         # TODO: Vérifiez si la touche pressée est la flèche droite avec event.key == pygame.K_RIGHT
             # TODO: Vérifiez si Pac-Man peut se déplacer à droite sans entrer en collision avec self.check_collision((1, 0))
                 # TODO: Si le déplacement est possible, définissez la nouvelle direction de Pac-Man vers la droite avec self.pacman.set_direction((1, 0))
-
         # TODO: Vérifiez si la touche pressée est la flèche gauche
             # TODO: Vérifiez si Pac-Man peut se déplacer à gauche sans entrer en collision
                 # TODO: Si le déplacement est possible, définissez la nouvelle direction de Pac-Man vers la gauche
@@ -113,6 +128,16 @@ class Game:
 
     def check_collision(self, direction):
         pass
+
+        dx, dy = direction
+        new_x = self.pacman.x + dx
+        new_y = self.pacman.y + dy
+
+        if 0 <= new_x < len(self.board[0]) and 0 <= new_y < len(self.board):
+        # Vérifier si la nouvelle position est un chemin (0) ou un mur (1)
+            return self.board[new_y][new_x] == 1  # Retourne True si c'est un mur, False sinon
+        return True 
+
         # TODO: Extraire les coordonnées de déplacement de la direction (dx, dy)
 
         # TODO: Calculer la nouvelle position de Pac-Man après le déplacement (new_x, new_y) avec la formule new_x = self.pacman.x + dx
@@ -140,6 +165,13 @@ class Game:
             # TODO: Si Pac-Man est sur une pièce, la retirer de la liste des pièces restantes à collecter 
 
             # TODO: Ajouter des points au score du joueur pour la pièce collectée (par exemple, 10 points)
+        pacman_position = (self.pacman.x, self.pacman.y)
+    
+        if pacman_position in self.coins:
+        # Retirer la pièce de la liste des pièces restantes
+            self.coins.remove(pacman_position)
+        # Ajouter des points au score
+            self.score += 10  # Par exemple, 10 points par pièce
 
         if len(self.coins) == 0:
             self.end.render(True)
@@ -148,6 +180,16 @@ class Game:
 
     def check_special_coins(self):
         pass
+        pacman_position = (self.pacman.x, self.pacman.y)
+
+        if pacman_position in self.special_coins:
+        # Retirer la pièce spéciale de la liste
+            self.special_coins.remove(pacman_position)
+        # Ajouter des points au score
+            self.score += 50  # Par exemple, 50 points pour une pièce spéciale
+        
+        # Activer le mode "manger" pour les fantômes
+            self.activate_eat_mode()
         # TODO: Vérifier si la position actuelle de Pac-Man (en coordonnées de grille) correspond à une position de pièce spéciale
 
             # TODO: Si Pac-Man est sur une pièce spéciale, retirer cette pièce spéciale de la liste
